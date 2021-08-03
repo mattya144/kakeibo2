@@ -13,13 +13,14 @@ const textEvent = async (event, client) => {
       // DBへメッセージのデータを追加してcontextを空にする
       const Addinfo = event.message.text.split(" ");
       const Addinfo_price = Addinfo[1].replace("円","");
-      /*const Date = new Date();
-      const year = Date.getFullYear();
-      const month = Date.getMonth()+1;
-      const day = Date.getDay();
-      const Addinfo_date = `${year}/${month}/${day}`;*/
+      const Date_info = new Date();
+      console.log("test")
+      const year = Date_info.getFullYear();
+      const month = Date_info.getMonth()+1;
+      const day = Date_info.getDay();
+      const Addinfo_date = `${year}/${month}/${day}`;
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
-      await axios.post(dbAPI, { data:[{ name : Addinfo[0], price : Addinfo_price}] });
+      await axios.post(dbAPI, { data:[{ date: `${year}` ,name : Addinfo[0], price : Addinfo_price}] });
       // index関数に返信するメッセージを返す
       return {
         type: 'text',
@@ -67,7 +68,7 @@ const textEvent = async (event, client) => {
       // 返信するメッセージを作成
       message = {
         type: 'text',
-        text: 'メモモードを開始しました',
+        text: '商品名と値段を空白切りにして入力してね',
       };
       break;
     }
