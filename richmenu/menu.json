@@ -1,0 +1,59 @@
+{
+    "size": {
+        "width": 2500,
+        "height": 1686
+    },
+    "selected": true,
+    "name": "richmenu-1",
+    "chatBarText": "メニューテスト",
+    "areas": [
+        {
+            "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 1250,
+                "height": 833
+            },
+            "action": {
+                "type": "message",
+                "text": "追加"
+            }
+        },
+        {
+            "bounds": {
+                "x": 1250,
+                "y": 0,
+                "width": 1250,
+                "height": 833
+            },
+            "action": {
+                "type": "message",
+                "text": "残高"
+            }
+        },
+        {
+            "bounds": {
+                "x": 0,
+                "y": 833,
+                "width": 1250,
+                "height": 833
+            },
+            "action": {
+                "type": "message",
+                "text": "金額設定"
+            }
+        },
+        {
+            "bounds": {
+                "x": 1250,
+                "y": 833,
+                "width": 1250,
+                "height": 833
+            },
+            "action": {
+                "type": "message",
+                "text": "月毎の集計"
+            }
+        }
+    ]
+}

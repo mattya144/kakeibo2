@@ -1,5 +1,33 @@
+const axios = require('axios');
+const dbAPI = 'https://sheetdb.io/api/v1/jiwx3s2y4u0jl';
 // テキストメッセージの処理をする関数
 const textEvent = async (event, client) => {
+  // ユーザーIDを取得
+  const { userId } = event.source;
+  // DBからユーザーのデータを取得
+  const data = (await axios.get(`${dbAPI}/search?userId=${userId}`)).data[0];
+  // もしそのユーザーのデータが存在する場合
+  if (data) {
+    // もしcontextがmemoModeだったら
+    if (data.context === 'addMode') {
+      // DBへメッセージのデータを追加してcontextを空にする
+      const Addinfo = event.message.text.split(" ");
+      const Addinfo_price = Addinfo[1].replace("円","");
+      const Date_info = new Date();
+      console.log("test")
+      const year = Date_info.getFullYear();
+      const month = Date_info.getMonth()+1;
+      const day = Date_info.getDay();
+      const Addinfo_date = `${year}/${month}/${day}`;
+      await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
+      await axios.post(dbAPI, { data:[{ date: `${year}` ,name : Addinfo[0], price : Addinfo_price}] });
+      // index関数に返信するメッセージを返す
+      return {
+        type: 'text',
+        text: `${event.message.text}というメッセージをdbに追加しました`,
+      };
+    }
+  }
   let message;
   // メッセージのテキストごとに条件分岐
   switch (event.message.text) {
@@ -12,21 +40,39 @@ const textEvent = async (event, client) => {
       };
       break;
     }
-    // '複数メッセージ'というメッセージが送られてきた時
-    case '複数メッセージ': {
-      // 返信するメッセージを作成
-      message = [
-        {
+    // 'メモ'というメッセージが送られてきた時
+    case 'リスト': {
+      // ユーザーのデータがDBに存在する時
+      if (data) {
+        // 返信するメッセージを作成
+        message = {
           type: 'text',
-          text: 'Hello, user',
-        },
-        {
+          text: `メモには以下のメッセージが保存されています\n\n${data.message}`,
+        };
+      } else {
+        // 返信するメッセージを作成
+        message = {
           type: 'text',
-          text: 'May I help you?',
-        },
-      ];
+          text: 'メモが存在しません',
+        };
+      }
       break;
     }
+    // 'メモ開始'というメッセージが送られてきた時
+    case '追加': {
+      if (data) {
+        await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: 'addMode' }] });
+      } else {
+        await axios.post(dbAPI, { data: [{ userId, context: 'addMode' }] });
+      }
+      // 返信するメッセージを作成
+      message = {
+        type: 'text',
+        text: '商品名と値段を空白切りにして入力してね',
+      };
+      break;
+    }
+
     // 'クイックリプライ'というメッセージが送られてきた時
     case 'クイックリプライ': {
       // 返信するメッセージを作成
