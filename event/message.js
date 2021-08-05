@@ -11,16 +11,15 @@ const textEvent = async (event, client) => {
     // もしcontextがmemoModeだったら
     if (data.context === 'addMode') {
       // DBへメッセージのデータを追加してcontextを空にする
-      const Addinfo = event.message.text.split(" ");
+      const Addinfo = event.message.text.split("　");
       const Addinfo_price = Addinfo[1].replace("円","");
       const Date_info = new Date();
-      console.log("test")
       const year = Date_info.getFullYear();
       const month = Date_info.getMonth()+1;
       const day = Date_info.getDay();
       const Addinfo_date = `${year}/${month}/${day}`;
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
-      await axios.post(dbAPI, { data:[{ date: `${year}` ,name : Addinfo[0], price : Addinfo_price}] });
+      await axios.post(dbAPI, { data:[{日付: Addinfo_date, 商品名: Addinfo[0], 値段: Addinfo_price}] });
       // index関数に返信するメッセージを返す
       return {
         type: 'text',
