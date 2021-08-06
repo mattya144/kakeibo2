@@ -23,7 +23,7 @@ const textEvent = async (event, client) => {
       // index関数に返信するメッセージを返す
       return {
         type: 'text',
-        text: `${event.message.text}というメッセージをdbに追加しました`,
+        text: `${event.message.text}というメッセージをdbに追加しましたわ`,
       };
     }
   }
