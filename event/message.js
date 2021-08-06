@@ -15,11 +15,11 @@ const textEvent = async (event, client) => {
       const Addinfo_price = Addinfo[1].replace("円","");
       const Date_info = new Date();
       const year = Date_info.getFullYear();
-      /*const month = Date_info.getMonth()+1;
+      const month = Date_info.getMonth()+1;
       const day = Date_info.getDay();
-      const Addinfo_date = `${year}/${month}/${day}`;*/
+      const Addinfo_date = `${year}/${month}/${day}`;
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
-      await axios.post(dbAPI, { data:[{日付: year, 商品名: Addinfo[0], 値段: Addinfo_price}] });
+      await axios.post(dbAPI, { data:[{日付: Addinfo_date, 商品名: Addinfo[0], 値段: Addinfo_price}] });
       // index関数に返信するメッセージを返す
       return {
         type: 'text',
@@ -28,7 +28,7 @@ const textEvent = async (event, client) => {
     }else if (data.context === 'moneyMode') {
       const Addinfo_money = event.message.text.replace("円","");
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
-      await axios.post(dbAPI, { data:[{金額設定: data.Addinfo_money}]});
+      await axios.post(dbAPI, { data:[{金額設定: Addinfo_money}]});
       return {
         type: 'text',
         text: `${event.message.text}が今月の生活費だよ`
@@ -47,20 +47,19 @@ const textEvent = async (event, client) => {
       };
       break;
     }
-    // 'メモ'というメッセージが送られてきた時
-    case 'リスト': {
+    case '残高': {
       // ユーザーのデータがDBに存在する時
       if (data) {
         // 返信するメッセージを作成
         message = {
           type: 'text',
-          text: `メモには以下のメッセージが保存されています\n\n${data.message}`,
+          text: `今月は残り${data.使用可能金額}円使えるよ`,
         };
       } else {
         // 返信するメッセージを作成
         message = {
           type: 'text',
-          text: 'メモが存在しません',
+          text: '月の使えるお金を入力してね',
         };
       }
       break;
