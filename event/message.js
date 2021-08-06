@@ -1,5 +1,5 @@
 const axios = require('axios');
-const dbAPI = 'https://sheetdb.io/api/v1/jiwx3s2y4u0jl';
+const dbAPI = 'https://sheetdb.io/api/v1/7pcv6mz0r6dxw';
 // テキストメッセージの処理をする関数
 const textEvent = async (event, client) => {
   // ユーザーIDを取得
@@ -25,6 +25,14 @@ const textEvent = async (event, client) => {
         type: 'text',
         text: `${event.message.text}というメッセージをdbに追加しましたわ`,
       };
+    }else if (data.context === 'moneyMode') {
+      const Addinfo_money = event.message.text.replace("円","");
+      await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
+      await axios.post(dbAPI, { data:[{金額設定: Addinfo_money}]});
+      return {
+        type: 'text',
+        text: `${event.message.text}が今月の生活費だよ`
+      };
     }
   }
   let message;
@@ -39,20 +47,19 @@ const textEvent = async (event, client) => {
       };
       break;
     }
-    // 'メモ'というメッセージが送られてきた時
-    case 'リスト': {
+    case '残高': {
       // ユーザーのデータがDBに存在する時
       if (data) {
         // 返信するメッセージを作成
         message = {
           type: 'text',
-          text: `メモには以下のメッセージが保存されています\n\n${data.message}`,
+          text: `今月は残り${data.使用可能金額}円使えるよ`,
         };
       } else {
         // 返信するメッセージを作成
         message = {
           type: 'text',
-          text: 'メモが存在しません',
+          text: '月の使えるお金を入力してね',
         };
       }
       break;
@@ -68,6 +75,20 @@ const textEvent = async (event, client) => {
       message = {
         type: 'text',
         text: '商品名と値段を空白切りにして入力してね',
+      };
+      break;
+    }
+
+    case '金額設定':{
+      if(data) {
+        await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: 'moneyMode' }] });
+      } else {
+        await axios.post(dbAPI, { data: [{ userId, context: 'moneyMode' }] });
+      }
+      // 返信するメッセージを作成
+      message = {
+        type: 'text',
+        text: '今月使えるお金はいくらまでかな？',
       };
       break;
     }
