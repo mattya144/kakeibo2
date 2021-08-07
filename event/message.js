@@ -21,10 +21,18 @@ const textEvent = async (event, client) => {
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
       await axios.post(dbAPI, { data:[{日付: Addinfo_date, 商品名: Addinfo[0], 値段: Addinfo_price}] });
       // index関数に返信するメッセージを返す
-      return {
-        type: 'text',
-        text: `${event.message.text}というメッセージをdbに追加しました`,
-      };
+      if(data.使用可能金額>=5000){
+        return {
+          type: 'text',
+          text: `${event.message.text}を登録したよ`,
+        };
+      }else if(data.使用可能金額<5000){
+        return {
+          type: 'text',
+          text: `${event.message.text}を登録したよ\nもう使える金額が${data.使用可能金額}しかないよ`,
+        };
+      }
+
     }else if (data.context === 'moneyMode') {
       const Addinfo_money = event.message.text.replace("円","");
       await axios.put(`${dbAPI}/userId/${userId}`, { data: [{ context: '' }] });
@@ -47,6 +55,7 @@ const textEvent = async (event, client) => {
       };
       break;
     }
+    
     case '残高': {
       // ユーザーのデータがDBに存在する時
       if (data) {
