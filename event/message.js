@@ -73,6 +73,22 @@ const textEvent = async (event, client) => {
       }
       break;
     }
+
+    case '月毎の集計':　{
+      if(data) {
+        message = {
+          type: 'text',
+          text: `今月は${data.利用率}％使用したよ`
+        };
+      }else{
+        essage = {
+          type: 'text',
+          text: '月の使えるお金を入力してね',
+        };
+      }
+      break;
+    }
+
     // 'メモ開始'というメッセージが送られてきた時
     case '追加': {
       if (data) {
